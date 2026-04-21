@@ -29,11 +29,12 @@ public:
     OwnedBuffer() : ptr_(nullptr), size_(0) {}
 
     explicit OwnedBuffer(size_t count) : ptr_(nullptr), size_(0) {
-        // YOUR CODE HERE
+        ptr_ = new T[count];
+        size_ = count;
     }
 
     ~OwnedBuffer() {
-        // YOUR CODE HERE
+        delete[] ptr_;
     }
 
     // Delete copy
@@ -43,12 +44,17 @@ public:
     // Move constructor
     OwnedBuffer(OwnedBuffer&& other) noexcept
         : ptr_(nullptr), size_(0) {
-        // YOUR CODE HERE — use std::exchange
+        ptr_ = std::exchange(other.ptr_, nullptr);
+        size_ = std::exchange(other.size_, 0);
     }
 
     // Move assignment
     OwnedBuffer& operator=(OwnedBuffer&& other) noexcept {
-        // YOUR CODE HERE — check self-assignment, free current, transfer
+        if (this == &other) return *this;
+
+        delete[] ptr_;
+        ptr_ = std::exchange(other.ptr_, nullptr);
+        size_ = std::exchange(other.size_, 0);
         return *this;
     }
 
@@ -58,15 +64,19 @@ public:
     size_t bytes() const noexcept { return size_ * sizeof(T); }
 
     void resize(size_t new_count) {
-        // YOUR CODE HERE — free and reallocate (content NOT preserved)
+        delete[] ptr_;
+        ptr_ = new T[new_count];
+        size_ = new_count;
     }
 
     void copy_from(const T* src, size_t count) {
-        // YOUR CODE HERE
+        // copy FROM somewhere INTO ME
+        std::memcpy(ptr_, src, count * sizeof(T));
     }
 
     void copy_to(T* dst, size_t count) const {
-        // YOUR CODE HERE
+        // copy FROM ME out TO somewhere
+        std::memcpy(dst, ptr_, count * sizeof(T));
     }
 
 private:

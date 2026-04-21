@@ -53,14 +53,20 @@ void test_move_assignment() {
 }
 
 void test_copy_roundtrip() {
-    OwnedBuffer<int> buf(10);
+    // create 10 counts with data [0][1][2][3][4][5][6][7][8][9] (stack array)
     int source[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
+    // create 10 counts uninitialized buffer [?][?][?][?][?][?][?][?][?][?] (heap array)
+    OwnedBuffer<int> buf(10);
+    // copy from source data into uninitialized buffer
     buf.copy_from(source, 10);
 
+    // create 10 counts of zero-initialized data [0][0][0][0][0][0][0][0][0][0] (stack array)
     int dest[10] = {};
+    // copy to destination data with buffer data recently copied from source
     buf.copy_to(dest, 10);
 
+    // check if the dest array has the correct values 0-9
     for (int i = 0; i < 10; ++i) {
         assert(dest[i] == i);
     }
