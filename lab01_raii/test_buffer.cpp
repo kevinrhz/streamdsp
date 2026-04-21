@@ -1,8 +1,8 @@
 /**
- * @file test_owned_buffer.cpp
- * @brief Tests for OwnedBuffer<T> — RAII move-only heap wrapper.
+ * @file test_buffer.cpp
+ * @brief Tests for Buffer<T> — RAII move-only heap wrapper.
  *
- * Run: ./lab01_test_owned_buffer
+ * Run: ./lab01_test_buffer
  * All assertions must pass with zero output (silent success).
  */
 
@@ -11,28 +11,28 @@
 #include <utility>
 #include <vector>
 
-#include "owned_buffer.hpp"
+#include "buffer.hpp"
 
-using stx::OwnedBuffer;
+using stx::Buffer;
 
 void test_construction() {
-    OwnedBuffer<float> buf(256);
+    Buffer<float> buf(256);
     assert(buf.get() != nullptr);
     assert(buf.size() == 256);
     assert(buf.bytes() == 256 * sizeof(float));
 }
 
 void test_default_construction() {
-    OwnedBuffer<float> buf;
+    Buffer<float> buf;
     assert(buf.get() == nullptr);
     assert(buf.size() == 0);
 }
 
 void test_move_construction() {
-    OwnedBuffer<float> buf1(128);
+    Buffer<float> buf1(128);
     float* original_ptr = buf1.get();
 
-    OwnedBuffer<float> buf2(std::move(buf1));
+    Buffer<float> buf2(std::move(buf1));
 
     assert(buf2.get() == original_ptr);
     assert(buf2.size() == 128);
@@ -41,8 +41,8 @@ void test_move_construction() {
 }
 
 void test_move_assignment() {
-    OwnedBuffer<float> buf1(128);
-    OwnedBuffer<float> buf2(64);
+    Buffer<float> buf1(128);
+    Buffer<float> buf2(64);
     float* ptr1 = buf1.get();
 
     buf2 = std::move(buf1);
@@ -57,7 +57,7 @@ void test_copy_roundtrip() {
     int source[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     // create 10 counts uninitialized buffer [?][?][?][?][?][?][?][?][?][?] (heap array)
-    OwnedBuffer<int> buf(10);
+    Buffer<int> buf(10);
     // copy from source data into uninitialized buffer
     buf.copy_from(source, 10);
 
@@ -73,7 +73,7 @@ void test_copy_roundtrip() {
 }
 
 void test_resize() {
-    OwnedBuffer<float> buf(100);
+    Buffer<float> buf(100);
     assert(buf.size() == 100);
 
     buf.resize(200);
@@ -86,7 +86,7 @@ void test_resize() {
 
 void test_destructor_doesnt_crash() {
     {
-        OwnedBuffer<float> buf(1024);
+        Buffer<float> buf(1024);
         // Destructor runs here — should not crash
     }
     // If we get here, destructor worked
@@ -101,6 +101,6 @@ int main() {
     test_resize();
     test_destructor_doesnt_crash();
 
-    std::printf("Lab 01 - OwnedBuffer: ALL TESTS PASSED\n");
+    std::printf("Lab 01 - Buffer: ALL TESTS PASSED\n");
     return 0;
 }

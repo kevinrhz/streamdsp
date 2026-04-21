@@ -1,16 +1,7 @@
 /**
- * @file owned_buffer.hpp
+ * @file buffer.hpp
  * @brief RAII move-only wrapper for heap-allocated memory.
- *
- * Mirrors the pattern from sigtekx::DeviceBuffer<T> and sigtekx::PinnedHostBuffer<T>
- * in cpp/include/sigtekx/core/cuda_wrappers.hpp.
- *
- * YOUR TASK: Implement this class from scratch.
- * - Constructor: allocate with new T[count]
- * - Destructor: deallocate with delete[]
- * - Delete copy constructor and copy assignment
- * - Implement move constructor and move assignment using std::exchange
- * - Methods: get(), size(), bytes(), resize(), copy_from(), copy_to()
+ * Mirrors sigtekx::DeviceBuffer<T> and sigtekx::PinnedHostBuffer<T>.
  */
 
 #pragma once
@@ -22,34 +13,32 @@
 namespace stx {
 
 template <typename T>
-class OwnedBuffer {
+class Buffer {
 public:
-    // TODO: Implement constructor, destructor, move semantics, methods
+Buffer() : ptr_(nullptr), size_(0) {}
 
-    OwnedBuffer() : ptr_(nullptr), size_(0) {}
-
-    explicit OwnedBuffer(size_t count) : ptr_(nullptr), size_(0) {
+    explicit Buffer(size_t count) : ptr_(nullptr), size_(0) {
         ptr_ = new T[count];
         size_ = count;
     }
 
-    ~OwnedBuffer() {
+    ~Buffer() {
         delete[] ptr_;
     }
 
     // Delete copy
-    OwnedBuffer(const OwnedBuffer&) = delete;
-    OwnedBuffer& operator=(const OwnedBuffer&) = delete;
+    Buffer(const Buffer&) = delete;
+    Buffer& operator=(const Buffer&) = delete;
 
     // Move constructor
-    OwnedBuffer(OwnedBuffer&& other) noexcept
+    Buffer(Buffer&& other) noexcept
         : ptr_(nullptr), size_(0) {
         ptr_ = std::exchange(other.ptr_, nullptr);
         size_ = std::exchange(other.size_, 0);
     }
 
     // Move assignment
-    OwnedBuffer& operator=(OwnedBuffer&& other) noexcept {
+    Buffer& operator=(Buffer&& other) noexcept {
         if (this == &other) return *this;
 
         delete[] ptr_;
