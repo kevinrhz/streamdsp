@@ -9,7 +9,6 @@
 #include <cassert>
 #include <cstdio>
 #include <utility>
-#include <vector>
 
 #include "buffer.hpp"
 

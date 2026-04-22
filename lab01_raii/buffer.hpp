@@ -15,8 +15,10 @@ namespace stx {
 template <typename T>
 class Buffer {
 public:
-Buffer() : ptr_(nullptr), size_(0) {}
+    // default - make an empty buffer
+    Buffer() : ptr_(nullptr), size_(0) {}
 
+    // sized - make a buffer of N elements
     explicit Buffer(size_t count) : ptr_(nullptr), size_(0) {
         ptr_ = new T[count];
         size_ = count;
@@ -26,7 +28,7 @@ Buffer() : ptr_(nullptr), size_(0) {}
         delete[] ptr_;
     }
 
-    // Delete copy
+    // Delete copy constructor and assignment
     Buffer(const Buffer&) = delete;
     Buffer& operator=(const Buffer&) = delete;
 
@@ -49,7 +51,8 @@ Buffer() : ptr_(nullptr), size_(0) {}
 
     T* get() noexcept { return ptr_; }
     const T* get() const noexcept { return ptr_; }
-    size_t size() const noexcept { return size_; }
+
+    size_t size()  const noexcept { return size_; }
     size_t bytes() const noexcept { return size_ * sizeof(T); }
 
     void resize(size_t new_count) {
