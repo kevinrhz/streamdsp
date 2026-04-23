@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cstring>
 #include "file.hpp"
-// TODO: #include "resource_exception.hpp"
+#include "resource_exception.hpp"
 
 using stx::File;
 
@@ -61,6 +61,22 @@ void test_write_read_roundtrip() {
     }
 }
 
+void test_check_posix_throws_on_bad_path() {
+    bool threw = false;
+    try {
+        CHECK_POSIX(open("/nonexistent/bad/path", O_RDONLY, 0));
+    } catch (const stx::ResourceException& e) {
+        threw = true;
+        assert(e.error_code() != 0);  // errno was captured
+    }
+    assert(threw);
+}
+
+void test_check_posix_succeeds_on_good_call() {
+    // should not throw — file exists and is writable
+    CHECK_POSIX(open("/tmp/stx_test.bin", O_WRONLY | O_CREAT | O_TRUNC, 0644));
+}
+
 int main() {
 
     test_construction();
@@ -68,6 +84,8 @@ int main() {
     test_move_construction();
     test_move_assignment();
     test_write_read_roundtrip();
+    test_check_posix_throws_on_bad_path();
+    test_check_posix_succeeds_on_good_call();
 
     std::printf("Lab 01 - File: TESTS PASSED!\n");
     return 0;
