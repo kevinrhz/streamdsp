@@ -49,8 +49,8 @@ public:
         return *this;
     }
 
-    T* get() noexcept { return ptr_; }
-    const T* get() const noexcept { return ptr_; }
+    T*       get();        // this = Buffer<float>*       → mutable context, returns writable ptr
+    const T* get() const;  // this = const Buffer<float>* → const context, returns read-only ptr
 
     size_t size()  const noexcept { return size_; }
     size_t bytes() const noexcept { return size_ * sizeof(T); }
