@@ -39,17 +39,35 @@ public:
     // See the study guide and lab syllabus for exact memory ordering
     // requirements on each atomic operation.
 
+    void push(const T* data, size_t count) {
+        // Aquire to see consumers latest advance
+        size_t available = available_.load(std::memory_order_acquire);
+        if (count > (capacity_ - available))
+            throw std::overflow_error("Ring buffer overflow");
+        
+        // Snapshot of own write position (relaxed - sole writer)
+        size_t pos = write_pos_.load(std::memory_order_relaxed);
+
+        // Copy payload into the ring
+        std::memcpy(&buffer_[pos], data, count * sizeof(T));
+
+        // Publish - release so consumer see the memcpy BEFORE the counters
+        write_pos_.store(pos + count, std::memory_order_release);
+        available_.fetch_add(count, std::memory_order_release);
+    }
+
+
     size_t capacity() const { return capacity_; }
     size_t available() const { return available_.load(std::memory_order_acquire); }
     bool empty() const { return available() == 0; }
     bool full() const { return available() == capacity_; }
 
 private:
-    size_t capacity_;
-    std::vector<T> buffer_;
+    size_t              capacity_;
+    std::vector<T>      buffer_;
     std::atomic<size_t> write_pos_;
     std::atomic<size_t> read_pos_;
-    std::atomic<size_t> available_;
+    std::atomic<size_t> available_; // Count of used slots, NOT free slots
 };
 
 }  // namespace stx

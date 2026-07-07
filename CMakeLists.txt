@@ -12,6 +12,6 @@ include_directories(${CMAKE_SOURCE_DIR}/common)
 
 # Labs (uncomment as you work through them)
 add_subdirectory(lab01_raii)
-# add_subdirectory(lab02_ring_buffer)
+add_subdirectory(lab02_ring_buffer)
 # add_subdirectory(lab03_pipeline)
 # add_subdirectory(lab04_executor)
