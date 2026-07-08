@@ -2,3 +2,5 @@ build/
 .cache/
 .DS_Store
 _personal/
+grades/
+CLAUDE.md

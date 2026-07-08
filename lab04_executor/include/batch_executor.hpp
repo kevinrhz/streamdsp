@@ -2,9 +2,7 @@
  * @file batch_executor.hpp
  * @brief Batch executor with round-robin buffers and simulated 3-thread pipeline.
  *
- * Mirrors: cpp/include/sigtekx/executors/batch_executor.hpp
- *
- * YOUR TASK: Implement in src/batch_executor.cpp.
+ * Implemented in src/batch_executor.cpp.
  */
 #pragma once
 

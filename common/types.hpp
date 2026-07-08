@@ -8,7 +8,6 @@ namespace stx {
 /**
  * @struct ProcessingStats
  * @brief Performance metrics for a processing operation.
- * Mirrors sigtekx::ProcessingStats from the real codebase.
  */
 struct ProcessingStats {
     float latency_us = 0.0f;
@@ -20,7 +19,6 @@ struct ProcessingStats {
 /**
  * @struct ReadSpan
  * @brief A contiguous span of elements within a ring buffer.
- * Mirrors sigtekx::RingBuffer::ReadSpan.
  */
 template <typename T>
 struct ReadSpan {
@@ -31,7 +29,6 @@ struct ReadSpan {
 /**
  * @struct FrameView
  * @brief Zero-copy view into a ring buffer frame (may be split at wraparound).
- * Mirrors sigtekx::RingBuffer::FrameView.
  */
 template <typename T>
 struct FrameView {

@@ -1,18 +1,18 @@
-# SigTekX Reconstruction Labs
+# streamdsp
 
 ## Purpose
 
-Rebuild the core components of SigTekX from scratch in pure C++17 — no CUDA, no AI assistance, no looking at the original code until you're stuck for 30+ minutes. When every test passes and you can rewrite each lab from a blank file, you own your project.
+A real-time streaming signal-processing pipeline, built from scratch in pure C++17 — no CUDA, no external DSP libraries. Every primitive (RAII resource wrappers, a lock-free SPSC ring buffer, a stage-based processing pipeline, threaded batch/streaming executors) is implemented from first principles rather than pulled from a framework.
 
 ## Quick Start
 
 ```bash
-cd sigtekx-reconstruction
+cd streamdsp
 mkdir build && cd build
 cmake ..
 cmake --build .
 
-# Run individual labs
+# Run individual components
 ./lab01_test_owned_buffer
 ./lab02_test_ring_buffer
 ./lab03_test_stages
@@ -20,32 +20,35 @@ cmake --build .
 ./lab04_test_batch
 ./lab04_test_streaming
 
-# Or run all tests for a lab
+# Or run all tests for a given component
 cmake --build . --target lab01_run
 cmake --build . --target lab02_run
 cmake --build . --target lab03_run
 cmake --build . --target lab04_run
 ```
 
-## Lab Order
+## Components
 
-| Lab | What You Build | SigTekX Equivalent | Days |
-|-----|---------------|-------------------|------|
-| 01 | RAII wrappers (OwnedBuffer, OwnedFile) | `cuda_wrappers.hpp` (DeviceBuffer, PinnedHostBuffer, CudaStream) | 1.5 |
-| 02 | Lock-free SPSC ring buffer with atomics | `ring_buffer.hpp` | 2 |
-| 03 | Processing pipeline (Strategy + Pimpl + Factory + Builder) | `processing_stage.hpp/cpp`, `pipeline_builder.hpp/cpp` | 2 |
-| 04 | Batch + Streaming executors with threading | `batch_executor.cpp`, `streaming_executor.cpp` | 2 |
+| Component | What It Does |
+|-----------|---------------|
+| RAII wrappers (`Buffer<T>`, `File`) | Move-only resource ownership over heap memory and POSIX file descriptors |
+| Lock-free SPSC ring buffer | Atomics-based circular buffer for single-producer/single-consumer streaming |
+| Processing pipeline | Strategy + Pimpl + Factory + Builder — composable Window/FFT/Magnitude stages |
+| Batch + streaming executors | Threaded execution with producer-consumer synchronization |
 
 ## How It Works
 
-Each lab has:
+Each component has:
 - **Header stubs** with `// TODO` markers showing exactly what to implement
-- **Complete test suites** that will pass once your implementation is correct
-- **RESULTS.md** templates to document what you learned
+- **Complete test suites** that pass once the implementation is correct
+- **RESULTS.md** notes documenting design decisions and what was learned building each piece
 
-The tests are written. Your job is to make them pass.
+The tests are written. The job is to make them pass.
 
-## Docs
+## Roadmap
 
-- `docs/SIGTEKX_STUDY_GUIDE.md` — What to understand about each SigTekX component
-- `docs/SIGTEKX_LAB_SYLLABUS.md` — Detailed requirements for each lab
+Capstone: wire the pipeline end-to-end into a WAV file reader, producing a frequency spectrum from real audio:
+
+```
+input.wav -> chunk reader -> RingBuffer -> WindowStage -> FFTStage -> MagnitudeStage -> spectrum output
+```

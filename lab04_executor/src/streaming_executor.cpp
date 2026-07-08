@@ -2,9 +2,9 @@
  * @file streaming_executor.cpp
  * @brief Streaming executor with ring buffer accumulation.
  *
- * YOUR TASK (see SIGTEKX_LAB_SYLLABUS.md Lab 4 Part B):
- * 1. Own per-channel RingBuffer<float> instances (from Lab 2).
- * 2. Own the processing pipeline (from Lab 3).
+ * TODO:
+ * 1. Own per-channel RingBuffer<float> instances.
+ * 2. Own the processing pipeline.
  * 3. submit(): split input by channel, push to ring buffers, count available
  *    frames, process all available frames, advance ring buffers.
  * 4. Handle N=0 (no-op), N=1 (single frame), N>=2 (batched).

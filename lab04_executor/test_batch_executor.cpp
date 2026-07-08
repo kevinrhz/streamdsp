@@ -1,7 +1,6 @@
 /**
  * @file test_batch_executor.cpp
  * @brief Tests for BatchExecutor.
- * See SIGTEKX_LAB_SYLLABUS.md Lab 4 Part A for requirements.
  */
 
 #include <cassert>

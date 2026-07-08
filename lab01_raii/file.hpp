@@ -1,7 +1,8 @@
 /**
  * @file file.hpp
  * @brief RAII move-only wrapper around a POSIX file descriptor.
- * Mirrors the handle-wrapping pattern of sigtekx::CudaStream / CufftPlan.
+ * Mirrors the handle-wrapping pattern used for opaque GPU handles (stream/plan objects) —
+ * same acquire/release contract, just over a kernel fd instead of a driver handle.
  *
  * Open flags (combine with |):
  *   O_RDONLY  — read only

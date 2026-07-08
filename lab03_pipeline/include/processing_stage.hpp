@@ -1,9 +1,9 @@
 /**
  * @file processing_stage.hpp
- * @brief Abstract interface for pipeline stages (Strategy pattern) + concrete declarations.
- * Mirrors sigtekx::ProcessingStage, WindowStage, FFTStage, MagnitudeStage.
+ * @brief Abstract interface for pipeline stages (Strategy pattern) + concrete declarations:
+ * WindowStage, FFTStage, MagnitudeStage.
  *
- * The interface is given. YOU implement the concrete stages in src/*.cpp using Pimpl.
+ * The interface is given. The concrete stages are implemented in src/*.cpp using Pimpl.
  */
 #pragma once
 

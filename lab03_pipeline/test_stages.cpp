@@ -1,7 +1,6 @@
 /**
  * @file test_stages.cpp
  * @brief Individual stage tests + factory tests.
- * See SIGTEKX_LAB_SYLLABUS.md Lab 3 for full test requirements.
  */
 
 #include <cassert>

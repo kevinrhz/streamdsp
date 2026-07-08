@@ -1,4 +1,4 @@
-# Lab 04 Results: Threaded Executors
+# Threaded Executors — Design Notes
 
 ## Date Completed:
 
@@ -11,7 +11,7 @@
 <!-- What happens with high overlap (0.875)? How many frames per submit? -->
 <!-- How does the batched path differ from N sequential process calls? -->
 
-## Connection to SigTekX:
-<!-- Map your CPU threads to CUDA streams in the real codebase -->
-<!-- Map your Event to CudaEvent -->
-<!-- What does your streaming executor NOT have that the real one does? (CUDA, DMA, etc.) -->
+## Design Precedent: GPU Stream Parallelism
+<!-- Map these CPU threads to CUDA streams in a GPU pipeline -->
+<!-- Map the Event class to a CUDA event -->
+<!-- What does this streaming executor NOT have that a GPU implementation would? (DMA, pinned memory, etc.) -->

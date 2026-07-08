@@ -1,7 +1,8 @@
 /**
  * @file resource_exception.hpp
  * @brief Exception type for failed POSIX calls + CHECK_POSIX macro.
- * Mirrors sigtekx::CudaException and SIGTEKX_CUDA_CHECK.
+ * Mirrors the typed error-check pattern common in CUDA codebases (e.g. a CUDA_CHECK
+ * macro that turns a C-style error code into a typed exception with file:line context).
  *
  * Usage:
  *   CHECK_POSIX(open("/bad/path", O_RDONLY, 0));

@@ -1,4 +1,4 @@
-# Lab 02 Results: Lock-Free SPSC Ring Buffer
+# Lock-Free SPSC Ring Buffer — Design Notes
 
 ## Date Completed:
 
@@ -8,6 +8,6 @@
 
 ## Key Observations:
 
-## Connection to SigTekX:
-<!-- How does this relate to ring_buffer.hpp in the real codebase? -->
-<!-- What role does peek_frame + advance(hop_size) play in the STFT pipeline? -->
+## Design Precedent: GPU Streaming Pipelines
+<!-- How does this compare to a ring buffer feeding a GPU streaming pipeline? -->
+<!-- What role does peek_frame + advance(hop_size) play in an STFT-style pipeline? -->

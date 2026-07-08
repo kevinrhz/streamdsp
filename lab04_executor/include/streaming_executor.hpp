@@ -2,9 +2,7 @@
  * @file streaming_executor.hpp
  * @brief Streaming executor with ring buffers and overlap-aware frame extraction.
  *
- * Mirrors: cpp/include/sigtekx/executors/streaming_executor.hpp
- *
- * YOUR TASK: Implement in src/streaming_executor.cpp.
+ * Implemented in src/streaming_executor.cpp.
  */
 #pragma once
 

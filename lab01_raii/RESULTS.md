@@ -1,14 +1,10 @@
-# Lab 01 Results: RAII Resource Wrappers
-
-> Formatted with AI assistance. Personal answers and reasoning are in the
-> mastery quiz transcript: `grades/2026-04-27_lab01_mastery.md`.
+# RAII Resource Wrappers — Design Notes
 
 ## Date Completed
 April 27, 2026
 
 ## Status
 - `Buffer<T>`, `File`, `ResourceException` + `CHECK_POSIX` — all implemented and passing tests
-- Mastery quiz taken: **62% — pass with significant gaps** (full Q&A in grades file)
 
 ## Key Observations
 - All three resource types collapse to the same RAII shape: acquire-once-or-fail in the constructor, release-exactly-once in the destructor, copy deleted, move transfers ownership.
@@ -22,16 +18,16 @@ April 27, 2026
 - `std::move` is a cast, not an action. It reclassifies an lvalue as an rvalue so the rvalue-reference overload becomes callable.
 - `noexcept` on the move ctor is what makes the class usable inside `std::vector` (vector falls back to copy on grow if move can throw, and copy is `= delete` here).
 
-## Connection to SigTekX
-| This lab | SigTekX equivalent | Resource managed |
+## Design Precedent: GPU Resource Wrappers
+| This lab | CUDA/GPU analog | Resource managed |
 |---|---|---|
-| `Buffer<T>` | `DeviceBuffer<T>` / `PinnedHostBuffer<T>` | heap allocation (`new T[]` ↔ `cudaMalloc`) |
-| `File` | `CudaStream`, `CufftPlan`, `CudaEvent` | opaque handle with sentinel (`-1` ↔ `nullptr`) |
-| `ResourceException` + `CHECK_POSIX` | `CudaException` + `SIGTEKX_CUDA_CHECK` / `CUFFT_CHECK` | C-style error code → typed C++ exception with file:line |
+| `Buffer<T>` | Device buffer / pinned-host buffer wrapper | heap allocation (`new T[]` ↔ `cudaMalloc`) |
+| `File` | Stream / plan / event handle wrapper | opaque handle with sentinel (`-1` ↔ `nullptr`) |
+| `ResourceException` + `CHECK_POSIX` | Typed CUDA exception + error-check macro | C-style error code → typed C++ exception with file:line |
 
 Same pattern across all of them because they share one shape: acquire-or-fail, release-exactly-once, opaque to the user.
 
-## Gaps to revisit (from quiz)
+## Open questions / follow-ups
 1. `= delete` is a compile-time prohibition, not an optimization
 2. `explicit` blocks the constructor as an implicit conversion (`Buffer b = 128`), not argument type conversion
 3. Move-assign must free the existing resource before stealing

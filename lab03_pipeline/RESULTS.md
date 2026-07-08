@@ -1,4 +1,4 @@
-# Lab 03 Results: Processing Pipeline
+# Processing Pipeline — Design Notes
 
 ## Date Completed:
 
@@ -8,7 +8,7 @@
 <!-- Factory: why not just call make_unique directly? -->
 <!-- Builder: what validation did it enable that raw construction wouldn't? -->
 
-## Connection to SigTekX:
-<!-- How do WindowStage/FFTStage/MagnitudeStage map to the real CUDA stages? -->
-<!-- Why does the real FFTStage use cuFFT while yours uses naive DFT? -->
+## Design Precedent: GPU-Accelerated Pipelines
+<!-- How do WindowStage/FFTStage/MagnitudeStage map to a CUDA-accelerated pipeline (cuFFT, etc.)? -->
+<!-- Why would a GPU implementation use cuFFT while this one uses a naive DFT? -->
 <!-- Why nfft/2+1 output bins? (Hermitian symmetry) -->

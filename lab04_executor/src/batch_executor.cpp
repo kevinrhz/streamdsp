@@ -2,7 +2,7 @@
  * @file batch_executor.cpp
  * @brief Batch executor implementation.
  *
- * YOUR TASK (see SIGTEKX_LAB_SYLLABUS.md Lab 4 Part A):
+ * TODO:
  * 1. Create default pipeline via StageFactory, initialize all stages.
  * 2. Allocate round-robin buffer pool (pinned_buffer_count = 2 sets of
  *    input/intermediate/output vectors).

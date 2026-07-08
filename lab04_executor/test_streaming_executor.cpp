@@ -1,7 +1,6 @@
 /**
  * @file test_streaming_executor.cpp
  * @brief Tests for StreamingExecutor.
- * See SIGTEKX_LAB_SYLLABUS.md Lab 4 Part B for requirements.
  */
 
 #include <cassert>

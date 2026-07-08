@@ -1,7 +1,8 @@
 /**
  * @file buffer.hpp
  * @brief RAII move-only wrapper for heap-allocated memory.
- * Mirrors sigtekx::DeviceBuffer<T> and sigtekx::PinnedHostBuffer<T>.
+ * Mirrors the shape of GPU-side device/pinned-host buffer wrappers (acquire-or-fail,
+ * release-exactly-once, move-only), applied here to a plain heap allocation.
  */
 
 #pragma once

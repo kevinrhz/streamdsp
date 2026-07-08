@@ -10,13 +10,13 @@
 
 using stx::RingBuffer;
 
-// TODO: Implement all tests from SIGTEKX_LAB_SYLLABUS.md Lab 2.
-// Start with: construction, push+available, push-to-full, overflow throws,
+// TODO: Implement correctness tests for RingBuffer<T>.
+// Start with: construction, push+readable, push-to-full, overflow throws,
 // extract_frame, advance, wraparound, extract_batch overlap, peek_frame.
 void test_construction() {
     RingBuffer<float> rbuf(1024);
     assert(rbuf.capacity() == 1024);
-    assert(rbuf.available() == 0);
+    assert(rbuf.readable() == 0);
     assert(rbuf.empty());
     assert(!rbuf.full());
 }
@@ -25,7 +25,7 @@ void test_push() {
     RingBuffer<float> rbuf(8);
     float data[] = {1.0f, 2.0f, 3.0f, 4.0f};
     rbuf.push(data, 4);
-    assert(rbuf.available() == 4);
+    assert(rbuf.readable() == 4);
 }
 
 int main() {
