@@ -10,6 +10,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <cassert>
 #include <cstring>
 #include <stdexcept>
 #include <vector>
@@ -29,10 +30,7 @@ public:
         }
     }
 
-    // TODO: Implement push(), extract_frame(), extract_batch(),
-    //       peek_frame(), peek_frame_at_offset(), advance(),
-    //       available(), capacity(), empty(), full(), reset(),
-    //       can_extract_frame()
+    // TODO: Implement extract_batch(), peek_frame(), peek_frame_at_offset(), reset()
     //
     // See the study guide and lab syllabus for exact memory ordering
     // requirements on each atomic operation.
@@ -54,6 +52,25 @@ public:
         readable_.fetch_add(count, std::memory_order_release);
     }
 
+    // Peek-copies frame_size elements — does NOT advance read_pos_/readable_.
+    // Caller must: check can_extract_frame(frame_size), call extract_frame(),
+    // then call advance(frame_size) to commit the read. Unchecked here by design.
+    void extract_frame(T* output, size_t frame_size) const {
+        size_t pos = read_pos_.load(std::memory_order_relaxed);
+        std::memcpy(output, &buffer_[pos], frame_size * sizeof(T));
+    }
+    bool can_extract_frame(const size_t frame_size) const { return frame_size <= readable(); }
+
+    // Commits a prior extract_frame() by advancing read_pos_ and shrinking readable_
+    // Assumes the same precondition extract_frame() already trusted.
+    void advance(size_t samples) {
+        size_t readable = readable_.load(std::memory_order_acquire);
+        assert(samples <= readable && "advance() called with samples exceeding readable elements");
+
+        size_t pos = read_pos_.load(std::memory_order_relaxed);
+        read_pos_.store(pos + samples, std::memory_order_release);
+        readable_.fetch_sub(samples, std::memory_order_release);
+    }
 
     size_t capacity() const { return capacity_; }
     size_t readable() const { return readable_.load(std::memory_order_acquire); }
