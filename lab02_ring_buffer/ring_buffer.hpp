@@ -44,11 +44,18 @@ public:
         // Snapshot of own write position (relaxed - sole writer)
         size_t pos = write_pos_.load(std::memory_order_relaxed);
 
-        // Copy payload into the ring
-        std::memcpy(&buffer_[pos], data, count * sizeof(T));
+        // If no wrapround, else yes wraparound
+        if (pos + count <= capacity_) {
+            std::memcpy(&buffer_[pos], data, count * sizeof(T));
+        } else {
+            size_t first_chunk = capacity_ - pos;       // tail: pos -> end
+            size_t second_chunk = count - first_chunk;  // head: wraps to 0
+            std::memcpy(&buffer_[pos], data, first_chunk * sizeof(T));
+            std::memcpy(&buffer_[0], data + first_chunk, second_chunk * sizeof(T));
+        }
 
         // Publish - release so consumer see the memcpy BEFORE the counters
-        write_pos_.store(pos + count, std::memory_order_release);
+        write_pos_.store((pos + count) % capacity_, std::memory_order_release);
         readable_.fetch_add(count, std::memory_order_release);
     }
 
@@ -57,7 +64,16 @@ public:
     // then call advance(frame_size) to commit the read. Unchecked here by design.
     void extract_frame(T* output, size_t frame_size) const {
         size_t pos = read_pos_.load(std::memory_order_relaxed);
-        std::memcpy(output, &buffer_[pos], frame_size * sizeof(T));
+
+        // If no wrapround, else yes wraparound
+        if (pos + frame_size <= capacity_) {
+            std::memcpy(output, &buffer_[pos], frame_size * sizeof(T));
+        } else {
+            size_t first_chunk = capacity_ - pos;
+            size_t second_chunk = frame_size - first_chunk;
+            std::memcpy(output, &buffer_[pos], first_chunk * sizeof(T));
+            std::memcpy(output + first_chunk, &buffer_[0], second_chunk * sizeof(T));
+        }
     }
     bool can_extract_frame(const size_t frame_size) const { return frame_size <= readable(); }
 
@@ -68,7 +84,7 @@ public:
         assert(samples <= readable && "advance() called with samples exceeding readable elements");
 
         size_t pos = read_pos_.load(std::memory_order_relaxed);
-        read_pos_.store(pos + samples, std::memory_order_release);
+        read_pos_.store((pos + samples) % capacity_, std::memory_order_release);
         readable_.fetch_sub(samples, std::memory_order_release);
     }
 
