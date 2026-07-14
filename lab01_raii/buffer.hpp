@@ -50,8 +50,14 @@ public:
         return *this;
     }
 
-    T*       get();        // this = Buffer<float>*       → mutable context, returns writable ptr
-    const T* get() const;  // this = const Buffer<float>* → const context, returns read-only ptr
+    // Overloaded on the constness of `this` — two distinct functions, the compiler picks by object:
+    //       Buffer<float> b;  b.get() -> T*        (writable)
+    // const Buffer<float> c;  c.get() -> const T*  (read-only)
+    // In the const version ptr_ is seen as `T* const`: the pointer is frozen, the pointee is not.
+    // Returning it as `const T*` is a safe implicit conversion — ADDING const to the pointee is
+    // always allowed; removing it would require const_cast. Same machinery as vector::operator[].
+    T*       get() { return ptr_; }        // this = Buffer<float>*       -> mutable context, returns writable ptr
+    const T* get() const { return ptr_; }  // this = const Buffer<float>* -> const context, returns read-only ptr
 
     size_t size()  const noexcept { return size_; }
     size_t bytes() const noexcept { return size_ * sizeof(T); }
